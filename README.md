@@ -1,9 +1,6 @@
 # clj-halodb
 
-TBW
-
-[yahoo/HaloDB](https://github.com/yahoo/HaloDB)
-
+A clojure library for managing [yahoo/HaloDB](https://github.com/yahoo/HaloDB) embedded key-value-store.
 
 ## Usage
 
