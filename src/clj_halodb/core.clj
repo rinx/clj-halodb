@@ -3,12 +3,12 @@
   (:import [com.oath.halodb HaloDB HaloDBOptions]))
 
 (defn ^HaloDBOptions options
-  "Returns the HaloDBOptions instance."
+  "Returns a new HaloDBOptions instance."
   [opts]
   (HaloDBOptions.))
 
 (defn ^HaloDB open
-  "Returns the HaloDB instance."
+  "Returns a new HaloDB instance."
   [^String directory ^HaloDBOptions opts]
   (HaloDB/open directory opts))
 
