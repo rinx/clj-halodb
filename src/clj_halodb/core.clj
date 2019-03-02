@@ -191,22 +191,22 @@
     (def halodb
       (open default-directory halodb-options)))
 
-  (put halodb {:a :b
-               ::c ::d
-               "stringkey" "stringvalue"
-               1 2})
-
   (do
     (put halodb {:x 3 :y 5 :z 6} #(- % 2))
     (->> [:x :y :z]
          (map (fn [x]
                 (get halodb x #(Integer/parseInt %))))))
 
-  (get halodb :a)
-  (get halodb :c)
-  (get halodb ::c)
-  (get halodb "stringkey")
-  (get halodb 1)
+  (do
+    (def m {:a :b
+            ::c ::d
+            "stringkey" "stringvalue"
+            1 2
+            :m {:a :b :c :d}})
+    (put halodb m))
+
+  (->> (keys m)
+       (map #(get halodb %)))
 
   (get halodb :a keyword)
   (get halodb :c keyword)
@@ -218,6 +218,7 @@
 
   (delete halodb :a)
   (delete halodb 1)
+  (delete halodb :m)
 
   (close halodb)
   )
