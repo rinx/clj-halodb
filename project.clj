@@ -6,6 +6,8 @@
   :repositories [["yahoo-bintray" "https://yahoo.bintray.com/maven"]]
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [org.clojure/spec.alpha "0.2.176"]
+                 [org.clojure/test.check "0.10.0-alpha3"]
+                 [orchestra "2019.02.06-1"]
                  [com.oath.halodb/halodb "0.5.1"]]
   :plugins [[lein-ancient "0.6.15"]]
   :profiles {:dev {:dependencies [[org.clojure/tools.namespace "0.2.11"]]
