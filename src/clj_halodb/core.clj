@@ -117,9 +117,8 @@
    (get db k nil))
   ([db k f]
    (let [ret (get-raw db k)]
-     (cond->
-       (when ret
-         (halodb.bytes/bytes->string ret))
+     (cond-> ret
+       ret (halodb.bytes/bytes->string)
        f (f)))))
 
 (spec/fdef
@@ -185,8 +184,8 @@
   (get halodb :a keyword)
   (get halodb :c keyword)
   (get halodb ::c keyword)
-  (get halodb "stringkey")
   (get halodb 1 #(Integer/parseInt %))
+  (get halodb :c #(Integer/parseInt %))
 
   (size halodb)
 
