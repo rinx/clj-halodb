@@ -1,10 +1,7 @@
 (ns clj-halodb.core
   (:require [clojure.spec.alpha :as spec]
             [clj-halodb.bytes :as halodb.bytes])
-  (:import [com.oath.halodb
-            HaloDB
-            HaloDBOptions
-            HaloDBStats])
+  (:import [com.oath.halodb HaloDB HaloDBOptions])
   (:refer-clojure :exclude [get]))
 
 (def default-directory "halodb-store")
