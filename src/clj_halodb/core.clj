@@ -89,7 +89,7 @@
    (HaloDB/open directory opts)))
 
 (spec/fdef
-  get-raw
+  get-bytes
   :args (spec/alt
           :without-fn (spec/cat :db db?
                                 :k any?)
