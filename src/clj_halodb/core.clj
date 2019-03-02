@@ -1,23 +1,32 @@
 (ns clj-halodb.core
-  (:require [clojure.spec.alpha :as spec])
+  (:require [clojure.spec.alpha :as spec]
+            [clj-halodb.spec :as halodb.spec]
+            [clj-halodb.bytes :as halodb.bytes])
   (:import [com.oath.halodb HaloDB HaloDBOptions]))
+
+(def default-directory "halodb-store")
 
 (defn ^HaloDBOptions options
   "Returns a new HaloDBOptions instance."
-  [opts]
-  (HaloDBOptions.))
+  ([]
+   (options {}))
+  ([opts]
+   (HaloDBOptions.)))
 
 (defn ^HaloDB open
   "Returns a new HaloDB instance."
-  [^String directory ^HaloDBOptions opts]
-  (HaloDB/open directory opts))
+  ([]
+   (open default-directory))
+  ([^String directory]
+   (open directory (options)))
+  ([^String directory ^HaloDBOptions opts]
+   (HaloDB/open directory opts)))
 
 (comment
-  (def directory "directory")
   (def halodb-options (options {}))
 
   (def halodb
-    (open directory halodb-options))
+    (open default-directory halodb-options))
 
   (-> halodb
       (.put (.getBytes "a") (.getBytes "value of a")))
