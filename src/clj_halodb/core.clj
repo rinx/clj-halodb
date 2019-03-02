@@ -101,15 +101,26 @@
 
 (spec/fdef
   get
-  :args (spec/cat :db db?
-                  :k any?)
+  :args (spec/alt
+          :without-fn (spec/cat :db db?
+                                :k any?)
+          :with-fn (spec/cat :db db?
+                             :k any?
+                             :f (spec/or :fn fn?
+                                         :nil nil?)))
   :ret (spec/or :string string?
-                :nil nil?))
+                :nil nil?
+                :any any?))
 
-(defn get [db k]
-  (let [ret (get-raw db k)]
-    (when ret
-      (halodb.bytes/bytes->string ret))))
+(defn get
+  ([db k]
+   (get db k nil))
+  ([db k f]
+   (let [ret (get-raw db k)]
+     (cond->
+       (when ret
+         (halodb.bytes/bytes->string ret))
+       f (f)))))
 
 (spec/fdef
   put
@@ -170,6 +181,12 @@
   (get halodb ::c)
   (get halodb "stringkey")
   (get halodb 1)
+
+  (get halodb :a keyword)
+  (get halodb :c keyword)
+  (get halodb ::c keyword)
+  (get halodb "stringkey")
+  (get halodb 1 #(Integer/parseInt %))
 
   (size halodb)
 
