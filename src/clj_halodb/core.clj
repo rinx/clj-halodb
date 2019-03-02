@@ -133,15 +133,26 @@
 
 (spec/fdef
   put
-  :args (spec/cat :db db?
-                  :m map?))
+  :args (spec/alt
+          :without-fn (spec/cat :db db?
+                                :m map?)
+          :with-fn (spec/cat :db db?
+                             :m map?
+                             :f (spec/or :fn fn?
+                                         :nil nil?))))
 
-(defn put [db m]
-  (let [f (fn [[k v]]
-            (doto db
-              (.put (halodb.bytes/->bytes k)
-                    (halodb.bytes/->bytes v))))]
-    (map f m)))
+(defn put
+  ([db m]
+   (put db m nil))
+  ([db m f]
+   (let [convert (if f
+                   (comp halodb.bytes/->bytes f)
+                   halodb.bytes/->bytes)
+         g (fn [[k v]]
+             (doto db
+               (.put (halodb.bytes/->bytes k)
+                     (convert v))))]
+     (map g m))))
 
 (spec/fdef
   delete
@@ -184,6 +195,12 @@
                ::c ::d
                "stringkey" "stringvalue"
                1 2})
+
+  (do
+    (put halodb {:x 3 :y 5 :z 6} #(- % 2))
+    (->> [:x :y :z]
+         (map (fn [x]
+                (get halodb x #(Integer/parseInt %))))))
 
   (get halodb :a)
   (get halodb :c)
