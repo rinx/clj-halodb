@@ -119,7 +119,7 @@
    (let [ret (get-raw db k)]
      (cond-> ret
        ret (halodb.bytes/bytes->string)
-       f (f)))))
+       (and ret f) (f)))))
 
 (spec/fdef
   put
