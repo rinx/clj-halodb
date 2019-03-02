@@ -90,14 +90,25 @@
 
 (spec/fdef
   get-raw
-  :args (spec/cat :db db?
-                  :k any?)
+  :args (spec/alt
+          :without-fn (spec/cat :db db?
+                                :k any?)
+          :with-fn (spec/cat :db db?
+                             :k any?
+                             :f (spec/or :fn fn?
+                                         :nil nil?)))
   :ret (spec/or :bytes bytes?
-                :nil nil?))
+                :nil nil?
+                :any any?))
 
-(defn get-raw [db k]
-  (-> db
-      (.get (halodb.bytes/->bytes k))))
+(defn get-bytes
+  ([db k]
+   (get-bytes db k nil))
+  ([db k f]
+   (let [ret (-> db
+                 (.get (halodb.bytes/->bytes k)))]
+     (cond-> ret
+       (and ret f) (f)))))
 
 (spec/fdef
   get
@@ -116,9 +127,8 @@
   ([db k]
    (get db k nil))
   ([db k f]
-   (let [ret (get-raw db k)]
+   (let [ret (get-bytes db k halodb.bytes/bytes->string)]
      (cond-> ret
-       ret (halodb.bytes/bytes->string)
        (and ret f) (f)))))
 
 (spec/fdef
