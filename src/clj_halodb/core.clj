@@ -14,7 +14,22 @@
   :ret #(instance? HaloDBOptions %))
 
 (defn ^HaloDBOptions options
-  "Returns a new HaloDBOptions instance."
+  "Returns a new HaloDBOptions instance.
+  The argument opts can contain key-values named as following:
+
+  :compaction-threshold-per-file
+  :max-file-size
+  :flush-data-size-bytes
+  :sync-write
+  :number-of-records
+  :compaction-job-rate
+  :clean-up-in-memory-index-on-close
+  :clean-up-tombstone-during-open
+  :use-memory-pool
+  :fixed-key-size
+  :memory-pool-chunk-size
+
+  Please refer the official documents of yahoo/HaloDB."
   ([]
    (options {}))
   ([{:keys [compaction-threshold-per-file
@@ -64,7 +79,9 @@
          (.setMemoryPoolChunkSize memory-pool-chunk-size)))
      options)))
 
-(defn db? [x]
+(defn db?
+  "Returns whether it is an instance of HaloDB."
+  [x]
   (instance? HaloDB x))
 
 (spec/fdef
@@ -77,7 +94,8 @@
   :ret db?)
 
 (defn ^HaloDB open
-  "Returns a new HaloDB instance."
+  "Returns a new HaloDB instance.
+  The default directory is 'halodb-store'."
   ([]
    (open default-directory))
   ([^String directory]
@@ -99,6 +117,8 @@
                 :any any?))
 
 (defn get-bytes
+  "Returns a result bytes of fetching value with given key from the db.
+  If f is specified, f is applied to the result and returns it."
   ([db k]
    (get-bytes db k nil))
   ([db k f]
@@ -121,6 +141,8 @@
                 :any any?))
 
 (defn get
+  "Returns a result string of fetching value with given key from the db.
+  If f is specified, f is applied to the result and returns it."
   ([db k]
    (get db k nil))
   ([db k f]
@@ -139,6 +161,8 @@
                                          :nil nil?))))
 
 (defn put
+  "Put the given map into the db.
+   If f is specified, f is applied to the value before putting."
   ([db m]
    (put db m nil))
   ([db m f]
@@ -157,6 +181,7 @@
                   :k any?))
 
 (defn delete [db k]
+  "Delete the specified key in the db."
   (doto db
     (.delete (halodb.bytes/->bytes k))))
 
@@ -165,6 +190,7 @@
   :args (spec/cat :db db?))
 
 (defn close [db]
+  "Close the db."
   (doto db
     (.close)))
 
@@ -174,6 +200,7 @@
   :ret int?)
 
 (defn size [db]
+  "Returns the size of the db."
   (-> db
       (.size)))
 
@@ -183,16 +210,16 @@
   (options {})
 
   (do
-    (def halodb-options (options {}))
+    (def halodb-options (options {:sync-write true}))
 
     (def halodb
       (open default-directory halodb-options)))
 
-  (do
-    (put halodb {:x 3 :y 5 :z 6} #(- % 2))
-    (->> [:x :y :z]
-         (map (fn [x]
-                (get halodb x #(Integer/parseInt %))))))
+  (put halodb {:x 3 :y 5 :z 6} #(- % 2))
+
+  (->> [:x :y :z]
+       (map (fn [x]
+              (get halodb x #(Integer/parseInt %)))))
 
   (do
     (def m {:a :b

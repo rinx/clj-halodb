@@ -12,3 +12,4 @@ pom.xml.asc
 .hg/
 /.lsp
 /halodb-store
+/.dev-store
