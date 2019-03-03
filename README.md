@@ -1,4 +1,5 @@
 # clj-halodb
+[![Clojars Project](https://img.shields.io/clojars/v/clj-halodb.svg)](https://clojars.org/clj-halodb)
 
 A clojure library for managing [yahoo/HaloDB](https://github.com/yahoo/HaloDB) embedded key-value-store.
 
