@@ -1,5 +1,6 @@
 # clj-halodb
 [![Clojars Project](https://img.shields.io/clojars/v/clj-halodb.svg)](https://clojars.org/clj-halodb)
+[![GitHub Actions: lein test](https://github.com/rinx/clj-halodb/workflows/lein%20test/badge.svg)](https://github.com/rinx/clj-halodb/actions)
 
 A clojure library for managing [yahoo/HaloDB](https://github.com/yahoo/HaloDB) embedded key-value-store.
 
