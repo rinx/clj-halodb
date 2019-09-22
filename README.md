@@ -6,9 +6,9 @@ A clojure library for managing [yahoo/HaloDB](https://github.com/yahoo/HaloDB) e
 ## Usage
 
 ```clojure
-;; clj-halodb 0.0.1 uses yahoo/HaloDB 0.5.1
+;; clj-halodb 0.0.2 uses yahoo/HaloDB 0.5.3
 
-[clj-halodb "0.0.1"]
+[clj-halodb "0.0.2"]
 ```
 
 ```clojure
@@ -88,4 +88,3 @@ Copyright © 2019 rinx
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at
 http://www.eclipse.org/legal/epl-2.0.
-
