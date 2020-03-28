@@ -24,4 +24,5 @@ jobs:
       - run: |
           echo "run tests"
           export PATH=$PATH:$HOME/local/bin
+          sudo lein version
           lein test

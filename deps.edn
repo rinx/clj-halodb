@@ -1,8 +1,6 @@
 {:deps
- {org.clojure/clojure       {:mvn/version "1.10.0"}
+ {org.clojure/clojure       {:mvn/version "1.10.2-alpha1"}
   org.clojure/spec.alpha {:mvn/version "0.2.176"}
-  org.clojure/test.check {:mvn/version "0.10.0-alpha3"}
-  orchestra {:mvn/version "2019.02.06-1"}
   com.oath.halodb/halodb {:mvn/version "0.5.3"}}
 
  :mvn/repos
@@ -11,5 +9,7 @@
  :aliases
  {:dev     {:extra-paths ["dev"]
             :extra-deps  {org.clojure/tools.namespace {:mvn/version "0.2.11"}
-                          cheshire {:mvn/version "5.9.0"}}}
+                          cheshire {:mvn/version "5.9.0"}
+                          org.clojure/test.check {:mvn/version "0.10.0-alpha3"}
+                          orchestra {:mvn/version "2019.02.06-1"}}}
   :test    {:extra-paths ["test"]}}}
