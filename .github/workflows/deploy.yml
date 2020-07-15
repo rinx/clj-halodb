@@ -1,0 +1,29 @@
+
+
+name: Deploy to Clojars
+on:
+  push:
+    tags:
+      - '*.*.*'
+      - 'v*.*.*'
+      - '*.*.*-*'
+      - 'v*.*.*-*'
+
+jobs:
+  deploy:
+    name: Deploy to Clojars
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code.
+        uses: actions/checkout@v1
+      - name: Install dependencies
+        run: |
+          curl -o lein https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
+          chmod a+x lein
+          sudo ./lein version
+      - name: Deploy
+        run: |
+          ./lein deploy clojars
+        env:
+          CLOJARS_USER: ${{ secrets.CLOJARS_USER }}
+          CLOJARS_TOKEN: ${{ secrets.CLOJARS_TOKEN }}

@@ -19,6 +19,7 @@
 
   :compaction-threshold-per-file
   :max-file-size
+  :max-tombstone-file-size
   :flush-data-size-bytes
   :sync-write
   :number-of-records
@@ -28,12 +29,14 @@
   :use-memory-pool
   :fixed-key-size
   :memory-pool-chunk-size
+  :build-index-threads
 
   Please refer the official documents of yahoo/HaloDB."
   ([]
    (options {}))
   ([{:keys [compaction-threshold-per-file
             max-file-size
+            max-tombstone-file-size
             flush-data-size-bytes
             sync-write
             number-of-records
@@ -42,7 +45,8 @@
             clean-up-tombstone-during-open
             use-memory-pool
             fixed-key-size
-            memory-pool-chunk-size] :as opts}]
+            memory-pool-chunk-size
+            build-index-threads] :as opts}]
    (let [options (HaloDBOptions.)]
      (when compaction-threshold-per-file
        (doto options
@@ -50,6 +54,9 @@
      (when max-file-size
        (doto options
          (.setMaxFileSize max-file-size)))
+     (when max-tombstone-file-size
+       (doto options
+         (.setMaxTombstoneFileSize max-tombstone-file-size)))
      (when flush-data-size-bytes
        (doto options
          (.setFlushDataSizeBytes flush-data-size-bytes)))
@@ -77,6 +84,9 @@
      (when memory-pool-chunk-size
        (doto options
          (.setMemoryPoolChunkSize memory-pool-chunk-size)))
+     (when build-index-threads
+       (doto options
+         (.setBuildIndexThreads build-index-threads)))
      options)))
 
 (defn db?
@@ -204,6 +214,59 @@
   (-> db
       (.size)))
 
+(spec/fdef
+  stats
+  :args (spec/cat :db db?)
+  :ret map?)
+
+(defn stats [db]
+  (let [st (-> db
+                  (.stats))]
+    {:size (.getSize st)
+     :number-of-files-pending-compaction (.getNumberOfFilesPendingCompaction st)
+     :stale-data-percent-per-file (.getStaleDataPercentPerFile st)
+     :rehash-count (.getRehashCount st)
+     :number-of-segments (.getNumberOfSegments st)
+     :max-size-per-segment (.getMaxSizePerSegment st)
+     :number-of-records-copied (.getNumberOfRecordsCopied st)
+     :number-of-records-replaced (.getNumberOfRecordsReplaced st)
+     :number-of-records-scanned (.getNumberOfRecordsScanned st)
+     :size-of-records-copied (.getSizeOfRecordsCopied st)
+     :size-of-files-deletes (.getSizeOfFilesDeleted st)
+     :size-reclaimed (.getSizeReclaimed st)
+     :number-of-data-files (.getNumberOfDataFiles st)
+     :number-of-tombstone-files (.getNumberOfTombstoneFiles st)
+     :number-of-tombstones-found-during-open (.getNumberOfTombstonesFoundDuringOpen st)
+     :number-of-tombstones-cleaned-up-during-open (.getNumberOfTombstonesCleanedUpDuringOpen st)
+     :compaction-rate-in-internal (.getCompactionRateInInternal st)
+     :compaction-rate-since-beginning (.getCompactionRateSinceBeginning st)
+     :compaction-running (.isCompactionRunning st)}))
+
+(spec/fdef
+  reset-stats
+  :args (spec/cat :db db?))
+
+(defn reset-stats [db]
+  (-> db
+      (.resetStats)))
+
+(spec/fdef
+  pause-compaction
+  :args (spec/cat :db db?))
+
+(defn pause-compaction [db]
+  (-> db
+      (.pauseCompaction)))
+
+(spec/fdef
+  resume-compaction
+  :args (spec/cat :db db?))
+
+(defn resume-compaction [db]
+  (-> db
+      (.resumeCompaction)))
+
+
 (comment
 
   (options {:number-of-records 10})
@@ -239,6 +302,13 @@
   (get halodb :c #(Integer/parseInt %))
 
   (size halodb)
+
+  (stats halodb)
+
+  (reset-stats halodb)
+
+  (pause-compaction halodb)
+  (resume-compaction halodb)
 
   (delete halodb :a)
   (delete halodb 1)

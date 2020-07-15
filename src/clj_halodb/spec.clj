@@ -3,6 +3,7 @@
 
 (spec/def ::compaction-threshold-per-file float?)
 (spec/def ::max-file-size int?)
+(spec/def ::max-tombstone-file-size int?)
 (spec/def ::flush-data-size-bytes int?)
 (spec/def ::sync-write boolean?)
 (spec/def ::number-of-records int?)
@@ -12,10 +13,12 @@
 (spec/def ::use-memory-pool boolean?)
 (spec/def ::fixed-key-size int?)
 (spec/def ::memory-pool-chunk-size int?)
+(spec/def ::build-index-threads int?)
 
 (spec/def ::halodb-options
   (spec/keys :opt-un [::compaction-threshold-per-file
                       ::max-file-size
+                      ::max-tombstone-file-size
                       ::flush-data-size-bytes
                       ::sync-write
                       ::number-of-records
@@ -24,5 +27,5 @@
                       ::clean-up-tombstone-during-open
                       ::use-memory-pool
                       ::fixed-key-size
-                      ::memory-pool-chunk-size]))
-
+                      ::memory-pool-chunk-size
+                      ::build-index-threads]))
